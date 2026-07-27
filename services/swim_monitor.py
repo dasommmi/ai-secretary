@@ -1,25 +1,22 @@
-import re
-
 import requests
 from bs4 import BeautifulSoup
+
+from models.course import Course
 
 
 class SwimMonitor:
 
     URL = "https://spc2.y-sisul.or.kr/page/lect/lect.n.list.asp?page=1&s_key=vname&s_val=&s_lgu_seq=10&s_lcl_seq=109"
 
-    TARGET = "[2026추첨]저녁수영20B(여성)(평영 이상 등록가능)"
-
     def __init__(self):
 
         self.session = requests.Session()
 
         self.session.headers.update({
-            "User-Agent": "Mozilla/5.0",
-            "Cache-Control": "no-cache"
+            "User-Agent": "Mozilla/5.0"
         })
 
-    def check(self):
+    def get_courses(self):
 
         response = self.session.get(
             self.URL,
@@ -28,28 +25,34 @@ class SwimMonitor:
 
         response.raise_for_status()
 
-        soup = BeautifulSoup(
-            response.text,
-            "html.parser"
-        )
+        soup = BeautifulSoup(response.text, "html.parser")
 
         rows = soup.select("table.tbl_scm1 tbody tr")
 
+        courses = []
+
         for row in rows:
 
-            text = row.get_text(" ", strip=True)
+            tds = row.select("td")
 
-            if self.TARGET not in text:
+            if len(tds) < 8:
                 continue
 
-            match = re.search(r"(\d+)\s*/\s*(\d+)", text)
+            course_name = tds[0].get_text(strip=True)
 
-            if not match:
-                raise Exception("좌석 정보를 찾을 수 없습니다.")
+            remain = tds[7].get_text(strip=True)
 
-            remain = int(match.group(1))
-            total = int(match.group(2))
+            current, total = remain.split("/")
 
-            return remain, total
+            status = tds[8].get_text(strip=True)
 
-        raise Exception("강좌를 찾을 수 없습니다.")
+            courses.append(
+                Course(
+                    name=course_name,
+                    remain=int(current),
+                    total=int(total),
+                    status=status
+                )
+            )
+
+        return courses
