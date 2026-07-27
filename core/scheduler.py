@@ -20,6 +20,7 @@ class Scheduler:
 
                 try:
                     service.check()
+
                 except Exception as e:
                     print(e)
 

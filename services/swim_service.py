@@ -24,15 +24,25 @@ class SwimService(BaseService):
             if course.name not in self.TARGETS:
                 continue
 
-            print(f"{course.name} : {course.remain}/{course.total}")
+            print(
+                f"{course.name} : {course.remain}/{course.total}"
+            )
 
-            previous = self.last.get(course.name, -1)
+            previous = self.last.get(
+                course.name,
+                -1
+            )
 
-            if course.remain > 0 and previous != course.remain:
+            if (
+                    course.remain > 0
+                    and previous != course.remain
+            ):
 
                 send_message(
                     f"""
 🏊 자리 발생!
+
+강좌
 
 {course.name}
 
@@ -44,4 +54,6 @@ class SwimService(BaseService):
 """
                 )
 
-            self.last[course.name] = course.remain
+            self.last[
+                course.name
+            ] = course.remain
