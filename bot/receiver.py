@@ -7,6 +7,8 @@ from config import TELEGRAM_TOKEN
 from bot.handlers import (
     help_command,
     status_command,
+    remember_command,
+    memories_command,
 )
 
 
@@ -31,6 +33,20 @@ class TelegramReceiver:
             CommandHandler(
                 "status",
                 status_command
+            )
+        )
+
+        self.app.add_handler(
+            CommandHandler(
+                "remember",
+                remember_command
+            )
+        )
+
+        self.app.add_handler(
+            CommandHandler(
+                "memories",
+                memories_command
             )
         )
 
