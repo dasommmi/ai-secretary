@@ -1,5 +1,6 @@
 from telegram import Update
 from telegram.ext import ContextTypes
+from services.assistant_service import chat
 
 from config import CHECK_INTERVAL
 from services.memory_service import (
@@ -16,8 +17,9 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         Available Commands
         
         /help
-        
         /status
+        /remember xxx
+        /memories
         """
     )
 
@@ -94,3 +96,28 @@ async def memories_command(
 
 
     await update.message.reply_text(message)
+
+
+async def ask_command(
+        update: Update,
+        context: ContextTypes.DEFAULT_TYPE
+):
+
+    text = " ".join(context.args)
+
+
+    if not text:
+
+        await update.message.reply_text(
+            "질문을 입력해주세요."
+        )
+
+        return
+
+
+    answer = chat(text)
+
+
+    await update.message.reply_text(
+        answer
+    )
