@@ -1,6 +1,7 @@
 from content.template_registry import TemplateRegistry
 from content.parser.parser_registry import ParserRegistry
 from content.builders.prompt_builder import PromptBuilder
+from content.generator.content_generator import ContentGenerator
 
 class ContentService:
 
@@ -43,3 +44,12 @@ class ContentService:
             content_type,
             request
         )
+
+    def generate(
+            self,
+            prompt: str
+    ):
+
+        generator = ContentGenerator()
+
+        return generator.generate(prompt)

@@ -13,6 +13,7 @@ from bot.handlers import (
     ask_command,
     health_command,
     content_command,
+    content_generate_command,
 )
 from core.logger import logger
 
@@ -82,6 +83,12 @@ class TelegramReceiver:
             )
         )
 
+        self.app.add_handler(
+            CommandHandler(
+                "generate",
+                content_generate_command
+            )
+        )
 
     def start(self):
 

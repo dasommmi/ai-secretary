@@ -203,3 +203,44 @@ async def content_command(
     except ValueError as e:
 
         await update.message.reply_text(str(e))
+
+async def content_generate_command(
+        update: Update,
+        context: ContextTypes.DEFAULT_TYPE
+):
+
+    text = " ".join(context.args)
+
+
+    if not text:
+
+        await update.message.reply_text(
+            "작성할 내용을 입력해주세요."
+        )
+
+        return
+
+
+    service = ContentService()
+
+
+    request = service.parse(
+        "restaurant",
+        text
+    )
+
+
+    prompt = service.build_prompt(
+        "restaurant",
+        request
+    )
+
+
+    result = service.generate(
+        prompt
+    )
+
+
+    await update.message.reply_text(
+        result
+    )
