@@ -12,6 +12,7 @@ from bot.handlers import (
     memories_command,
     ask_command,
     health_command,
+    content_command,
 )
 from core.logger import logger
 
@@ -71,6 +72,13 @@ class TelegramReceiver:
             CommandHandler(
                 "health",
                 health_command
+            )
+        )
+
+        self.app.add_handler(
+            CommandHandler(
+                "content",
+                content_command
             )
         )
 

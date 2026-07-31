@@ -1,6 +1,7 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 from services.assistant_service import chat
+from services.content_service import ContentService
 
 from config import (
     CHECK_INTERVAL,
@@ -25,6 +26,8 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         /status
         /remember xxx
         /memories
+        /ask 질문
+        /content restaurant
         """
     )
 
@@ -168,3 +171,35 @@ async def ask_command(
     await update.message.reply_text(
         answer
     )
+
+
+async def content_command(
+            update: Update,
+            context: ContextTypes.DEFAULT_TYPE
+    ):
+
+    if not context.args:
+
+        await update.message.reply_text(
+            """
+사용법
+
+/content restaurant
+"""
+        )
+
+        return
+
+    content_type = context.args[0]
+
+    service = ContentService()
+
+    try:
+
+        form = service.get_form(content_type)
+
+        await update.message.reply_text(form)
+
+    except ValueError as e:
+
+        await update.message.reply_text(str(e))
