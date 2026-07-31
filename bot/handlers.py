@@ -20,14 +20,28 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         """
         🤖 AI Secretary
         
-        Available Commands
-        
-        /help
-        /status
-        /remember xxx
-        /memories
-        /ask 질문
-        /content restaurant
+Available Commands
+
+[System]
+
+/help
+/status
+
+
+[Memory]
+
+/remember xxx
+/memories
+
+
+[AI]
+
+/ask 질문
+
+
+[Content]
+
+/content restaurant
         """
     )
 
@@ -241,6 +255,18 @@ async def content_generate_command(
     )
 
 
-    await update.message.reply_text(
+    file_path = service.write_markdown(
+        "restaurant",
         result
+    )
+
+
+    await update.message.reply_text(
+        f"""
+    📝 글 생성 완료
+    
+    파일 저장:
+    
+    {file_path}
+    """
     )

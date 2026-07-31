@@ -2,6 +2,7 @@ from content.template_registry import TemplateRegistry
 from content.parser.parser_registry import ParserRegistry
 from content.builders.prompt_builder import PromptBuilder
 from content.generator.content_generator import ContentGenerator
+from content.writer.markdown_writer import MarkdownWriter
 
 class ContentService:
 
@@ -53,3 +54,16 @@ class ContentService:
         generator = ContentGenerator()
 
         return generator.generate(prompt)
+
+    def write_markdown(
+            self,
+            content_type: str,
+            content: str
+    ):
+
+        writer = MarkdownWriter()
+
+        return writer.write(
+            content_type,
+            content
+        )
