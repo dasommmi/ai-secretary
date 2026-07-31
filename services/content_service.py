@@ -1,6 +1,6 @@
 from content.template_registry import TemplateRegistry
 from content.parser.parser_registry import ParserRegistry
-
+from content.builders.prompt_builder import PromptBuilder
 
 class ContentService:
 
@@ -29,3 +29,17 @@ class ContentService:
         )
 
         return parser.parse(text)
+
+
+    def build_prompt(
+            self,
+            content_type: str,
+            request
+    ):
+
+        builder = PromptBuilder()
+
+        return builder.build(
+            content_type,
+            request
+        )
