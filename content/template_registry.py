@@ -2,7 +2,7 @@ from content.content_type import ContentType
 from content.templates.restaurant import RestaurantTemplate
 
 
-class TemplateManager:
+class TemplateRegistry:
 
     _templates = {
         ContentType.RESTAURANT: RestaurantTemplate,

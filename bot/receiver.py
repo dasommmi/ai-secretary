@@ -1,6 +1,8 @@
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
+    MessageHandler,
+    filters,
 )
 
 import config
@@ -13,7 +15,7 @@ from bot.handlers import (
     ask_command,
     health_command,
     content_command,
-    content_generate_command,
+    text_message_handler,
 )
 from core.logger import logger
 
@@ -84,9 +86,9 @@ class TelegramReceiver:
         )
 
         self.app.add_handler(
-            CommandHandler(
-                "generate",
-                content_generate_command
+            MessageHandler(
+                filters.TEXT & ~filters.COMMAND,
+                text_message_handler
             )
         )
 

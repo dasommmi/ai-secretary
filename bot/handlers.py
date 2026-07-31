@@ -2,6 +2,7 @@ from telegram import Update
 from telegram.ext import ContextTypes
 from services.assistant_service import chat
 from services.content_service import ContentService
+from services.content_session_service import ContentSessionService
 
 from config import (
     CHECK_INTERVAL,
@@ -13,6 +14,10 @@ from services.memory_service import (
     get_memories,
 )
 from core.runtime import runtime_manager
+
+content_service = ContentService()
+
+session_service = ContentSessionService()
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
@@ -188,35 +193,49 @@ async def ask_command(
 
 
 async def content_command(
-            update: Update,
-            context: ContextTypes.DEFAULT_TYPE
-    ):
+        update: Update,
+        context: ContextTypes.DEFAULT_TYPE
+):
 
     if not context.args:
 
         await update.message.reply_text(
-            """
-사용법
-
-/content restaurant
-"""
+            "사용법: /content restaurant"
         )
 
         return
 
+
     content_type = context.args[0]
 
-    service = ContentService()
 
-    try:
+    user_id = str(
+        update.effective_user.id
+    )
 
-        form = service.get_form(content_type)
 
-        await update.message.reply_text(form)
+    session_service.create(
+        user_id,
+        content_type
+    )
 
-    except ValueError as e:
 
-        await update.message.reply_text(str(e))
+    form = content_service.get_form(
+        content_type
+    )
+
+
+    await update.message.reply_text(
+        f"""
+✍️ {content_type} 작성 시작
+
+아래 양식을 작성해주세요.
+
+{form}
+"""
+    )
+
+
 
 async def content_generate_command(
         update: Update,
@@ -269,4 +288,67 @@ async def content_generate_command(
     
     {file_path}
     """
+    )
+
+
+async def text_message_handler(
+        update: Update,
+        context: ContextTypes.DEFAULT_TYPE
+):
+
+    user_id = str(
+        update.effective_user.id
+    )
+
+
+    session = session_service.get(
+        user_id
+    )
+
+
+    if not session:
+
+        return
+
+
+
+    content_type = session["content_type"]
+
+
+    request = content_service.parse(
+        content_type,
+        update.message.text
+    )
+
+
+    prompt = content_service.build_prompt(
+        content_type,
+        request
+    )
+
+
+    result = content_service.generate(
+        prompt
+    )
+
+
+    file_path = content_service.write_markdown(
+        content_type,
+        result
+    )
+
+
+    session_service.remove(
+        user_id
+    )
+
+
+    await update.message.reply_text(
+        f"""
+📝 작성 완료
+
+파일 생성:
+
+{file_path}
+"""
     )

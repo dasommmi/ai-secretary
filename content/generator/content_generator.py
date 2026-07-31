@@ -1,4 +1,4 @@
-from ai.openrouter import ask
+from ai.openrouter import ask_openrouter
 
 
 class ContentGenerator:
@@ -9,4 +9,4 @@ class ContentGenerator:
             prompt: str
     ) -> str:
 
-        return ask(prompt)
+        return ask_openrouter(prompt)
