@@ -2,7 +2,11 @@ from telegram import Update
 from telegram.ext import ContextTypes
 from services.assistant_service import chat
 
-from config import CHECK_INTERVAL
+from config import (
+    CHECK_INTERVAL,
+    get_environment,
+    AI_MODEL,
+)
 from services.memory_service import (
     save_memory,
     get_memories,
@@ -24,19 +28,32 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def status_command(
+        update: Update,
+        context: ContextTypes.DEFAULT_TYPE
+):
 
     await update.message.reply_text(
         f"""
 🤖 AI Secretary
 
+
+Environment : {get_environment()}
+
+
 Status
 
 🟢 Running
 
+
 🏊 Swim Monitor
 
 Interval : {CHECK_INTERVAL} sec
+
+
+🤖 AI Model
+
+{AI_MODEL}
 """
     )
 

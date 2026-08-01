@@ -3,6 +3,7 @@ import argparse
 
 
 from database.db import init_db
+
 from core.scheduler import Scheduler
 
 from config import (
@@ -12,9 +13,18 @@ from config import (
 
 
 
+scheduler = None
+
+
+
 def run_scheduler():
 
-    Scheduler().start()
+    global scheduler
+
+
+    scheduler = Scheduler()
+
+    scheduler.start()
 
 
 
@@ -55,12 +65,22 @@ if __name__ == "__main__":
     init_db()
 
 
-    from bot.receiver import TelegramReceiver
+
+    print(
+        "Scheduler : Starting"
+    )
+
+
 
     threading.Thread(
         target=run_scheduler,
         daemon=True
     ).start()
+
+
+
+    # 환경 설정 이후 import
+    from bot.receiver import TelegramReceiver
 
 
 

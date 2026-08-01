@@ -37,6 +37,12 @@ def set_environment(env: str):
 
 
 
+def get_environment():
+
+    return APP_ENV.upper()
+
+
+
 # ======================
 # Common Config
 # ======================
@@ -52,6 +58,7 @@ AI_MODEL = "openrouter/free"
 # ======================
 
 TELEGRAM_TOKEN = None
+
 
 TELEGRAM_CHAT_ID = os.getenv(
     "TELEGRAM_CHAT_ID"
@@ -74,7 +81,10 @@ OPENROUTER_API_KEY = os.getenv(
 
 
 
-# 기본 실행 환경
+# ======================
+# Initial Environment
+# ======================
+
 set_environment(
     os.getenv(
         "APP_ENV",
@@ -98,7 +108,8 @@ Telegram    : {}
 ================================
 """.format(
             APP_ENV.upper(),
-            "DEV BOT" if APP_ENV == "dev"
+            "DEV BOT"
+            if APP_ENV == "dev"
             else "PROD BOT"
         )
     )
