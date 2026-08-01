@@ -1,19 +1,33 @@
 from datetime import date
 
 from domain.knowledge.entities import DailyDigest
-from domain.knowledge.ports import InterestRepositoryPort, KnowledgeCuratorPort
+from domain.knowledge.ports import (
+    InterestRepositoryPort,
+    KnowledgeCuratorPort,
+    DigestRepositoryPort,
+)
 
 
 class GenerateDailyDigestUseCase:
 
     def __init__(
-        self, interest_repository: InterestRepositoryPort, curator: KnowledgeCuratorPort
+        self,
+        interest_repository: InterestRepositoryPort,
+        digest_repository: DigestRepositoryPort,
+        curator: KnowledgeCuratorPort,
     ):
 
         self.interest_repository = interest_repository
+        self.digest_repository = digest_repository
         self.curator = curator
 
-    def execute(self) -> DailyDigest:
+    def execute(self) -> DailyDigest | None:
+
+        if self.digest_repository.exists_today():
+
+            print("오늘 Digest가 이미 생성되었습니다.")
+
+            return None
 
         interests = self.interest_repository.find_all()
 
@@ -25,4 +39,8 @@ class GenerateDailyDigestUseCase:
 
             items.append(item)
 
-        return DailyDigest(digest_date=date.today(), items=items)
+        digest = DailyDigest(digest_date=date.today(), items=items)
+
+        self.digest_repository.save(digest)
+
+        return digest
