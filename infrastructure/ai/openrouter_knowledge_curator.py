@@ -1,4 +1,5 @@
 from ai.openrouter import ask_openrouter
+from domain.knowledge.category_profiles import CATEGORY_PROFILES
 from domain.knowledge.entities import KnowledgeItem
 
 
@@ -6,45 +7,49 @@ class OpenRouterKnowledgeCurator:
 
     def curate(self, category: str) -> KnowledgeItem:
 
-        prompt = self._build_prompt(category)
+        profile = CATEGORY_PROFILES[category]
+
+        prompt = self._build_prompt(profile)
 
         response = ask_openrouter(prompt)
 
         return self._parse_response(category, response)
 
-    def _build_prompt(self, category: str):
+    def _build_prompt(self, profile):
 
         return f"""
 너는 개인 지식 큐레이터다.
 
 카테고리:
-{category}
+{profile.description}
 
 
-오늘 알아두면 좋은 지식 하나를 만들어줘.
+작성 규칙:
+
+{profile.prompt_rule}
 
 
 조건:
 
 - 친구에게 설명하기 좋은 내용
-- 너무 뻔한 상식 금지
+- 너무 흔한 상식 금지
 - 질문/답변 형식
+- 하나의 주제만 선택
 
 
-출력:
-
+출력 형식:
 
 QUESTION:
-내용
-
+질문
 
 ANSWER:
-내용
+답변
 """
 
-    def _parse_response(self, category: str, response: str):
+    def _parse_response(self, category, response):
 
         question = ""
+
         answer = ""
 
         for line in response.split("\n"):
@@ -53,7 +58,7 @@ ANSWER:
 
                 question = line.replace("QUESTION:", "").strip()
 
-            if line.startswith("ANSWER:"):
+            elif line.startswith("ANSWER:"):
 
                 answer = line.replace("ANSWER:", "").strip()
 
