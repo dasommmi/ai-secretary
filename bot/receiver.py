@@ -3,15 +3,17 @@ from telegram.ext import (
     CommandHandler,
 )
 
-from config import TELEGRAM_TOKEN
+import config
+
 from bot.handlers import (
     help_command,
     status_command,
     remember_command,
     memories_command,
     ask_command,
+    health_command,
 )
-
+from core.logger import logger
 
 class TelegramReceiver:
 
@@ -19,9 +21,12 @@ class TelegramReceiver:
 
         self.app = (
             ApplicationBuilder()
-            .token(TELEGRAM_TOKEN)
+            .token(
+                config.TELEGRAM_TOKEN
+            )
             .build()
         )
+
 
         self.app.add_handler(
             CommandHandler(
@@ -30,12 +35,14 @@ class TelegramReceiver:
             )
         )
 
+
         self.app.add_handler(
             CommandHandler(
                 "status",
                 status_command
             )
         )
+
 
         self.app.add_handler(
             CommandHandler(
@@ -44,12 +51,14 @@ class TelegramReceiver:
             )
         )
 
+
         self.app.add_handler(
             CommandHandler(
                 "memories",
                 memories_command
             )
         )
+
 
         self.app.add_handler(
             CommandHandler(
@@ -58,8 +67,19 @@ class TelegramReceiver:
             )
         )
 
+        self.app.add_handler(
+            CommandHandler(
+                "health",
+                health_command
+            )
+        )
+
+
     def start(self):
 
-        print("Telegram Receiver Started")
+        logger.info(
+            "Telegram Receiver Started"
+        )
+
 
         self.app.run_polling()
