@@ -1,66 +1,60 @@
-from datetime import date
-
 from ai.openrouter import ask_openrouter
-from domain.knowledge.entities import KnowledgeItem, DailyDigest
-from domain.knowledge.ports import KnowledgeCuratorPort
+from domain.knowledge.entities import KnowledgeItem
 
 
-class OpenRouterKnowledgeCurator(KnowledgeCuratorPort):
+class OpenRouterKnowledgeCurator:
 
-    def curate(self, interests: list[str]) -> DailyDigest:
+    def curate(self, category: str) -> KnowledgeItem:
 
-        prompt = self._build_prompt(interests)
+        prompt = self._build_prompt(category)
 
         response = ask_openrouter(prompt)
 
-        item = self._parse_response(response)
+        return self._parse_response(category, response)
 
-        return DailyDigest(digest_date=date.today(), items=[item])
-
-    def _build_prompt(self, interests: list[str]) -> str:
+    def _build_prompt(self, category: str):
 
         return f"""
-너는 개인 지식 큐레이터야.
+너는 개인 지식 큐레이터다.
 
-사용자의 관심 분야:
-{interests}
+카테고리:
+{category}
 
 
-오늘 알아두면 좋은 지식 1개를 만들어줘.
+오늘 알아두면 좋은 지식 하나를 만들어줘.
 
 
 조건:
 
-- 질문과 답변 형태
-- 너무 뻔한 내용 금지
-- 친구에게 설명할 수 있는 수준
-- 재미있거나 실용적인 내용
+- 친구에게 설명하기 좋은 내용
+- 너무 뻔한 상식 금지
+- 질문/답변 형식
 
 
-형식:
+출력:
+
 
 QUESTION:
-질문
+내용
+
 
 ANSWER:
-답변
+내용
 """
 
-    def _parse_response(self, response: str) -> KnowledgeItem:
+    def _parse_response(self, category: str, response: str):
 
         question = ""
         answer = ""
 
-        lines = response.split("\n")
-
-        for line in lines:
+        for line in response.split("\n"):
 
             if line.startswith("QUESTION:"):
 
                 question = line.replace("QUESTION:", "").strip()
 
-            elif line.startswith("ANSWER:"):
+            if line.startswith("ANSWER:"):
 
                 answer = line.replace("ANSWER:", "").strip()
 
-        return KnowledgeItem(category="GENERAL", question=question, answer=answer)
+        return KnowledgeItem(category=category, question=question, answer=answer)

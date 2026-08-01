@@ -1,3 +1,5 @@
+from datetime import date
+
 from domain.knowledge.entities import DailyDigest
 from domain.knowledge.ports import KnowledgeCuratorPort
 
@@ -10,4 +12,12 @@ class GenerateDailyDigestUseCase:
 
     def execute(self, interests: list[str]) -> DailyDigest:
 
-        return self.curator.curate(interests)
+        items = []
+
+        for category in interests:
+
+            item = self.curator.curate(category)
+
+            items.append(item)
+
+        return DailyDigest(digest_date=date.today(), items=items)

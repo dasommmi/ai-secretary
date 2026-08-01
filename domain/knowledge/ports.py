@@ -1,11 +1,11 @@
 from typing import Protocol
 
-from domain.knowledge.entities import DailyDigest
+from domain.knowledge.entities import KnowledgeItem
 
 
 class KnowledgeCuratorPort(Protocol):
 
-    def curate(self, interests: list[str]) -> DailyDigest: ...
+    def curate(self, category: str) -> KnowledgeItem: ...
 
 
 class DigestRepositoryPort(Protocol):
