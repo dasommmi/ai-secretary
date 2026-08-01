@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from domain.knowledge.entities import KnowledgeItem
+from domain.knowledge.entities import KnowledgeItem, DailyDigest
 
 
 class KnowledgeCuratorPort(Protocol):
@@ -17,6 +17,6 @@ class DigestRepositoryPort(Protocol):
 
 class InterestRepositoryPort(Protocol):
 
-    def save(self, interests: list[str]): ...
+    def save(self, category: str): ...
 
-    def find(self) -> list[str]: ...
+    def find_all(self) -> list[str]: ...
