@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
 
-class BaseService(ABC):
+class BaseParser(ABC):
 
     @abstractmethod
-    def check(self):
+    def parse(self, text):
         pass

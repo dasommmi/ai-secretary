@@ -1,0 +1,53 @@
+name: Sandy Blog Style
+
+title:
+  min_length: 25
+  max_length: 45
+  pattern:
+    - 지역
+    - 카테고리
+    - 상호명
+  separator: ","
+
+tone:
+  polite: true
+  exaggeration: false
+  conversational: true
+
+paragraph:
+  max_lines: 10
+  short_sentence: true
+
+flow:
+  - 방문 계기
+  - 기본 정보
+  - 방문 과정
+  - 분위기
+  - 메뉴
+  - 후기
+  - 총평
+
+preferred:
+  - 생각보다
+  - 오히려
+  - 개인적으로
+  - 전체적으로
+  - 만족스러웠다
+  - 한 번쯤
+  - 인생
+  - 레전드
+
+forbidden:
+  - 숨은 보물
+  - 최고의
+  - 완벽한
+  - 무조건 추천
+  - 꼭 가봐야 할
+
+review:
+  include_pros: true
+  include_cons: true
+
+ending:
+  revisit: true
+  recommendation: true

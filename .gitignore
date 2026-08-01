@@ -22,3 +22,7 @@ logs/
 
 # memories
 *.db
+
+# generated
+generated/*
+!generated/.gitkeep

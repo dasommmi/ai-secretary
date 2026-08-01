@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 
 
-class BaseService(ABC):
+class BaseValidator(ABC):
 
     @abstractmethod
-    def check(self):
+    def validate(self, content: str):
+
         pass
