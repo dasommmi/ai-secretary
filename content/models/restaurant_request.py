@@ -26,26 +26,35 @@ class RestaurantRequest:
     recommend: str = ""
     photo_note: str = ""
 
-def to_prompt(self):
 
-    return f"""
-상호명:
+    def to_prompt(self):
+
+        return f"""
+[기본 정보]
+
+가게명:
 {self.store_name}
 
-위치:
+지역:
 {self.location}
 
-방문일:
+방문 날짜:
 {self.visit_date}
 
-동행:
-{self.companion}
 
-방문시간:
-{self.visit_time}
+[방문]
+
+방문 인원:
+{self.companion}
 
 웨이팅:
 {self.waiting}
+
+방문 시간:
+{self.visit_time}
+
+
+[주문]
 
 메뉴:
 {self.menu}
@@ -53,7 +62,10 @@ def to_prompt(self):
 가격:
 {self.price}
 
-음식 후기:
+
+[후기]
+
+음식:
 {self.food}
 
 분위기:
@@ -65,10 +77,13 @@ def to_prompt(self):
 좋았던 점:
 {self.good}
 
-아쉬운 점:
+아쉬웠던 점:
 {self.bad}
 
-재방문:
+
+[마무리]
+
+재방문 의사:
 {self.revisit}
 
 추천 대상:

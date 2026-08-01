@@ -4,7 +4,29 @@ from content.builders.prompt_builder import PromptBuilder
 from content.generator.content_generator import ContentGenerator
 from content.writer.markdown_writer import MarkdownWriter
 
+from content.builders.profile_loader import ProfileLoader
+from content.validator.content_validator import ContentValidator
+
+
+
 class ContentService:
+
+
+    def __init__(self):
+
+        self.generator = ContentGenerator()
+
+        self.writer = MarkdownWriter()
+
+        profile = (
+            ProfileLoader
+            .load("sandy")
+        )
+
+        self.validator = ContentValidator(
+            profile
+        )
+
 
 
     def get_form(
@@ -33,6 +55,7 @@ class ContentService:
         return parser.parse(text)
 
 
+
     def build_prompt(
             self,
             content_type: str,
@@ -46,14 +69,55 @@ class ContentService:
             request
         )
 
+
+
     def generate(
             self,
             prompt: str
     ):
 
-        generator = ContentGenerator()
 
-        return generator.generate(prompt)
+        retry = 0
+
+
+        while retry < 3:
+
+
+            content = (
+                self.generator
+                .generate(prompt)
+            )
+
+
+            result = (
+                self.validator
+                .validate(content)
+            )
+
+
+            if result.success:
+
+                return content
+
+
+
+            prompt += f"""
+
+다음 문제를 수정해서 다시 작성해주세요.
+
+문제:
+{result.errors}
+
+"""
+
+
+            retry += 1
+
+
+
+        return content
+
+
 
     def write_markdown(
             self,
@@ -61,9 +125,7 @@ class ContentService:
             content: str
     ):
 
-        writer = MarkdownWriter()
-
-        return writer.write(
+        return self.writer.write(
             content_type,
             content
         )
