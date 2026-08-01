@@ -1,4 +1,4 @@
-from apscheduler.schedulers.background import BackgroundScheduler
+from domain.knowledge.category import get_category_name
 
 
 class DailyDigestScheduler:
@@ -9,47 +9,57 @@ class DailyDigestScheduler:
 
         self.notifier = notifier
 
-        self.scheduler = BackgroundScheduler(timezone="Asia/Seoul")
+        from apscheduler.schedulers.background import BackgroundScheduler
+
+        self.scheduler = BackgroundScheduler()
 
     def start(self):
 
-        self.scheduler.add_job(self.execute, trigger="cron", hour=8, minute=30)
+        print("🔥 DailyDigestScheduler started")
+
+        self.scheduler.add_job(
+            self.execute,
+            trigger="cron",
+            hour=8,
+            minute=30,
+            max_instances=1,
+            coalesce=True,
+        )
 
         self.scheduler.start()
 
     def execute(self):
 
-        try:
+        print("🔥 Digest execute start")
 
-            digest = self.use_case.execute()
+        digest = self.use_case.execute()
 
-            if digest is None:
+        if digest is None:
 
-                return
+            print("오늘 Digest 이미 존재")
 
-            message = self._format_message(digest)
+            return
 
-            self.notifier.send(message)
-
-        except Exception as e:
-
-            print("Digest Scheduler Error", e)
-
-    def _format_message(self, digest):
-
-        result = []
-
-        result.append("🧠 오늘의 Knowledge Digest\n")
+        print(f"생성된 Knowledge : {len(digest.items)}")
 
         for item in digest.items:
 
-            result.append(f"""
-[{item.category}]
+            category_name = get_category_name(item.category)
+
+            message = f"""
+🧠 오늘의 Knowledge Digest
+
+{category_name}
 
 Q. {item.question}
 
 A. {item.answer}
+""".strip()
 
-""")
+            print(f"Telegram 전송 : {item.category}")
 
-        return "\n".join(result)
+            self.notifier.send(message)
+
+            # Telegram 연속 발송 방지
+
+            # time.sleep(1)

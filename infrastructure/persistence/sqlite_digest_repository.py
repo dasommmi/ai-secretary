@@ -63,3 +63,24 @@ class SqliteDigestRepository(DigestRepositoryPort):
         conn.close()
 
         return count > 0
+
+    def exists_question(self, question: str):
+
+        conn = get_connection()
+
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT COUNT(*)
+            FROM knowledge_digest
+            WHERE question = ?
+            """,
+            (question,),
+        )
+
+        result = cursor.fetchone()[0]
+
+        conn.close()
+
+        return result > 0

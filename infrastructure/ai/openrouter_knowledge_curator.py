@@ -47,19 +47,55 @@ ANSWER:
 """
 
     def _parse_response(self, category, response):
+        print("===== AI RESPONSE =====")
 
+        print(response)
+
+        print("======================")
         question = ""
-
         answer = ""
 
-        for line in response.split("\n"):
+        mode = None
 
-            if line.startswith("QUESTION:"):
+        for line in response.splitlines():
 
-                question = line.replace("QUESTION:", "").strip()
+            line = line.strip()
 
-            elif line.startswith("ANSWER:"):
+            if not line:
+                continue
 
-                answer = line.replace("ANSWER:", "").strip()
+            if line.upper().startswith("QUESTION"):
 
-        return KnowledgeItem(category=category, question=question, answer=answer)
+                mode = "question"
+
+                content = line.split(":", 1)
+
+                if len(content) > 1 and content[1].strip():
+
+                    question = content[1].strip()
+
+                continue
+
+            if line.upper().startswith("ANSWER"):
+
+                mode = "answer"
+
+                content = line.split(":", 1)
+
+                if len(content) > 1 and content[1].strip():
+
+                    answer = content[1].strip()
+
+                continue
+
+            if mode == "question":
+
+                question += " " + line
+
+            elif mode == "answer":
+
+                answer += " " + line
+
+        return KnowledgeItem(
+            category=category, question=question.strip(), answer=answer.strip()
+        )

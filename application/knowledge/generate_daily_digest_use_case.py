@@ -37,10 +37,14 @@ class GenerateDailyDigestUseCase:
 
             item = self.curator.curate(category)
 
+            if self.digest_repository.exists_question(item.question):
+                print("중복 Knowledge 제거:", item.question)
+                continue
+
             items.append(item)
 
         digest = DailyDigest(digest_date=date.today(), items=items)
-
+        print(digest.items)
         self.digest_repository.save(digest)
 
         return digest
