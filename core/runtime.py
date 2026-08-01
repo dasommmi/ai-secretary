@@ -79,3 +79,6 @@ class RuntimeManager:
                 self.get_uptime()
 
         }
+
+
+runtime_manager = RuntimeManager()

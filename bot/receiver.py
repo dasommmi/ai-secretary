@@ -11,6 +11,7 @@ from bot.handlers import (
     remember_command,
     memories_command,
     ask_command,
+    health_command,
 )
 
 
@@ -63,6 +64,13 @@ class TelegramReceiver:
             CommandHandler(
                 "ask",
                 ask_command
+            )
+        )
+
+        self.app.add_handler(
+            CommandHandler(
+                "health",
+                health_command
             )
         )
 

@@ -5,7 +5,7 @@ import argparse
 from database.db import init_db
 
 from core.scheduler import Scheduler
-from core.runtime import RuntimeManager
+from core.runtime import runtime_manager
 
 from config import (
     set_environment,
@@ -13,9 +13,7 @@ from config import (
 )
 
 
-
 scheduler = None
-runtime = RuntimeManager()
 
 
 def run_scheduler():
@@ -57,7 +55,7 @@ if __name__ == "__main__":
             "dev"
         )
 
-    runtime.start(
+    runtime_manager.start(
         "PROD" if args.prod else "DEV"
     )
 
