@@ -11,7 +11,8 @@ def init_db():
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("""
+    cursor.execute(
+        """
     CREATE TABLE IF NOT EXISTS memories (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id TEXT,
@@ -20,7 +21,8 @@ def init_db():
         importance INTEGER DEFAULT 3,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
-    """)
+    """
+    )
 
     conn.commit()
     conn.close()

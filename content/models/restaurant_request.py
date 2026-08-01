@@ -26,7 +26,6 @@ class RestaurantRequest:
     recommend: str = ""
     photo_note: str = ""
 
-
     def to_prompt(self):
 
         return f"""

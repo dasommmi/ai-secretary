@@ -5,9 +5,7 @@ from services.swim_monitor import SwimMonitor
 
 class SwimService(BaseService):
 
-    TARGETS = [
-        "[2026추첨]저녁수영20B(여성)(평영 이상 등록가능)"
-    ]
+    TARGETS = ["[2026추첨]저녁수영20B(여성)(평영 이상 등록가능)"]
 
     def __init__(self):
 
@@ -24,19 +22,11 @@ class SwimService(BaseService):
             if course.name not in self.TARGETS:
                 continue
 
-            print(
-                f"{course.name} : {course.remain}/{course.total}"
-            )
+            print(f"{course.name} : {course.remain}/{course.total}")
 
-            previous = self.last.get(
-                course.name,
-                -1
-            )
+            previous = self.last.get(course.name, -1)
 
-            if (
-                    course.remain > 0
-                    and previous != course.remain
-            ):
+            if course.remain > 0 and previous != course.remain:
 
                 send_message(
                     f"""
@@ -54,6 +44,4 @@ class SwimService(BaseService):
 """
                 )
 
-            self.last[
-                course.name
-            ] = course.remain
+            self.last[course.name] = course.remain

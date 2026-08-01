@@ -8,9 +8,7 @@ from content.builders.profile_loader import ProfileLoader
 from content.validator.content_validator import ContentValidator
 
 
-
 class ContentService:
-
 
     def __init__(self):
 
@@ -18,88 +16,41 @@ class ContentService:
 
         self.writer = MarkdownWriter()
 
-        profile = (
-            ProfileLoader
-            .load("sandy")
-        )
+        profile = ProfileLoader.load("sandy")
 
-        self.validator = ContentValidator(
-            profile
-        )
+        self.validator = ContentValidator(profile)
 
+    def get_form(self, content_type: str) -> str:
 
-
-    def get_form(
-            self,
-            content_type: str
-    ) -> str:
-
-        template = TemplateRegistry.get_template(
-            content_type
-        )
+        template = TemplateRegistry.get_template(content_type)
 
         return template.generate_form()
 
+    def parse(self, content_type: str, text: str):
 
-
-    def parse(
-            self,
-            content_type: str,
-            text: str
-    ):
-
-        parser = ParserRegistry.get_parser(
-            content_type
-        )
+        parser = ParserRegistry.get_parser(content_type)
 
         return parser.parse(text)
 
-
-
-    def build_prompt(
-            self,
-            content_type: str,
-            request
-    ):
+    def build_prompt(self, content_type: str, request):
 
         builder = PromptBuilder()
 
-        return builder.build(
-            content_type,
-            request
-        )
+        return builder.build(content_type, request)
 
-
-
-    def generate(
-            self,
-            prompt: str
-    ):
-
+    def generate(self, prompt: str):
 
         retry = 0
 
-
         while retry < 3:
 
+            content = self.generator.generate(prompt)
 
-            content = (
-                self.generator
-                .generate(prompt)
-            )
-
-
-            result = (
-                self.validator
-                .validate(content)
-            )
-
+            result = self.validator.validate(content)
 
             if result.success:
 
                 return content
-
-
 
             prompt += f"""
 
@@ -110,22 +61,10 @@ class ContentService:
 
 """
 
-
             retry += 1
-
-
 
         return content
 
+    def write_markdown(self, content_type: str, content: str):
 
-
-    def write_markdown(
-            self,
-            content_type: str,
-            content: str
-    ):
-
-        return self.writer.write(
-            content_type,
-            content
-        )
+        return self.writer.write(content_type, content)

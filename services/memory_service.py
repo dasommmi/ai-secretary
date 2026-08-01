@@ -16,12 +16,7 @@ def save_memory(user_id, content, category="memo", importance=3):
         )
         VALUES (?, ?, ?, ?)
         """,
-        (
-            user_id,
-            content,
-            category,
-            importance
-        )
+        (user_id, content, category, importance),
     )
 
     conn.commit()
@@ -39,7 +34,7 @@ def get_memories(user_id):
         WHERE user_id = ?
         ORDER BY id DESC
         """,
-        (user_id,)
+        (user_id,),
     )
 
     memories = cursor.fetchall()
@@ -59,10 +54,7 @@ def delete_memory(user_id, memory_id):
         WHERE id = ?
         AND user_id = ?
         """,
-        (
-            memory_id,
-            user_id
-        )
+        (memory_id, user_id),
     )
 
     conn.commit()

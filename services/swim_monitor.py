@@ -12,16 +12,11 @@ class SwimMonitor:
 
         self.session = requests.Session()
 
-        self.session.headers.update({
-            "User-Agent": "Mozilla/5.0"
-        })
+        self.session.headers.update({"User-Agent": "Mozilla/5.0"})
 
     def get_courses(self):
 
-        response = self.session.get(
-            self.URL,
-            timeout=10
-        )
+        response = self.session.get(self.URL, timeout=10)
 
         response.raise_for_status()
 
@@ -51,7 +46,7 @@ class SwimMonitor:
                     name=course_name,
                     remain=int(current),
                     total=int(total),
-                    status=status
+                    status=status,
                 )
             )
 

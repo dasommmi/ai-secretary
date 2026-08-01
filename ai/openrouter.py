@@ -13,16 +13,8 @@ def ask_openrouter(message: str):
             "Authorization": f"Bearer {os.getenv('OPENROUTER_API_KEY')}",
             "Content-Type": "application/json",
         },
-        json={
-            "model":AI_MODEL,
-            "messages": [
-                {
-                    "role": "user",
-                    "content": message
-                }
-            ]
-        },
-        timeout=30
+        json={"model": AI_MODEL, "messages": [{"role": "user", "content": message}]},
+        timeout=30,
     )
 
     print(response.status_code)

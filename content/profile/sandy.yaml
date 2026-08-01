@@ -1,12 +1,13 @@
 name: Sandy Blog Style
 
 title:
+  min_length: 25
   max_length: 45
   pattern:
     - 지역
     - 카테고리
     - 상호명
-  separator: "|"
+  separator: ","
 
 tone:
   polite: true

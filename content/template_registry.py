@@ -15,8 +15,6 @@ class TemplateRegistry:
             content_type = ContentType(content_type.lower())
 
         except ValueError:
-            raise ValueError(
-                f"지원하지 않는 콘텐츠 타입입니다. ({content_type})"
-            )
+            raise ValueError(f"지원하지 않는 콘텐츠 타입입니다. ({content_type})")
 
         return cls._templates[content_type]()
