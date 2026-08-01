@@ -11,6 +11,8 @@ class KnowledgeItem:
 
     answer: str
 
+    source: str = "AI"
+
 
 @dataclass
 class DailyDigest:

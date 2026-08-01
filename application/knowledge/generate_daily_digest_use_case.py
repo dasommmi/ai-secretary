@@ -1,16 +1,21 @@
 from datetime import date
 
 from domain.knowledge.entities import DailyDigest
-from domain.knowledge.ports import KnowledgeCuratorPort
+from domain.knowledge.ports import InterestRepositoryPort, KnowledgeCuratorPort
 
 
 class GenerateDailyDigestUseCase:
 
-    def __init__(self, curator: KnowledgeCuratorPort):
+    def __init__(
+        self, interest_repository: InterestRepositoryPort, curator: KnowledgeCuratorPort
+    ):
 
+        self.interest_repository = interest_repository
         self.curator = curator
 
-    def execute(self, interests: list[str]) -> DailyDigest:
+    def execute(self) -> DailyDigest:
+
+        interests = self.interest_repository.find_all()
 
         items = []
 
