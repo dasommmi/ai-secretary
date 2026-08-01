@@ -1,25 +1,33 @@
-from content.prompt.restaurant_prompt import (
-    build_restaurant_prompt
-)
+from content.builders.style_loader import StyleLoader
+from content.template_registry import TemplateRegistry
 
 
 class PromptBuilder:
 
-
     def build(
             self,
             content_type: str,
-            request
+            request,
     ) -> str:
 
+        template = TemplateRegistry.get(content_type)
 
-        if content_type == "restaurant":
+        style = StyleLoader.load()
 
-            data = request.__dict__
+        return f"""
+# Template
 
-            return build_restaurant_prompt(data)
+{template}
 
+----------------------------------------
 
-        raise ValueError(
-            f"지원하지 않는 prompt type입니다. {content_type}"
-        )
+# Style
+
+{style}
+
+----------------------------------------
+
+# User Input
+
+{request.to_prompt()}
+"""
