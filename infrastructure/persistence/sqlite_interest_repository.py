@@ -1,56 +1,50 @@
-import sqlite3
+from database.db import get_connection
 
 from domain.knowledge.ports import InterestRepositoryPort
 
 
 class SqliteInterestRepository(InterestRepositoryPort):
 
-    def __init__(self, db_path: str = "assistant.db"):
-
-        self.db_path = db_path
-
     def save(self, category: str):
 
-        with sqlite3.connect(self.db_path) as conn:
+        conn = get_connection()
 
-            conn.execute(
-                """
-                INSERT OR IGNORE INTO knowledge_interest
-                (
-                    category,
-                    enabled
-                )
-                VALUES
-                (
-                    ?,
-                    1
-                )
-                """,
-                (category,),
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            INSERT OR IGNORE INTO knowledge_interest
+            (
+                category
             )
+            VALUES
+            (
+                ?
+            )
+            """,
+            (category,),
+        )
+
+        conn.commit()
+
+        conn.close()
 
     def find_all(self) -> list[str]:
 
-        with sqlite3.connect(self.db_path) as conn:
+        conn = get_connection()
 
-            cursor = conn.execute("""
-                SELECT category
-                FROM knowledge_interest
-                WHERE enabled = 1
-                """)
+        cursor = conn.cursor()
 
-            rows = cursor.fetchall()
+        cursor.execute("""
+            SELECT category
 
-            return [row[0] for row in rows]
+            FROM knowledge_interest
 
-    def delete(self, category: str):
+            WHERE enabled = 1
+            """)
 
-        with sqlite3.connect(self.db_path) as conn:
+        rows = cursor.fetchall()
 
-            conn.execute(
-                """
-                DELETE FROM knowledge_interest
-                WHERE category = ?
-                """,
-                (category,),
-            )
+        conn.close()
+
+        return [row[0] for row in rows]
