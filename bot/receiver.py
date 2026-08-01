@@ -3,7 +3,8 @@ from telegram.ext import (
     CommandHandler,
 )
 
-from config import TELEGRAM_TOKEN
+import config
+
 from bot.handlers import (
     help_command,
     status_command,
@@ -19,9 +20,12 @@ class TelegramReceiver:
 
         self.app = (
             ApplicationBuilder()
-            .token(TELEGRAM_TOKEN)
+            .token(
+                config.TELEGRAM_TOKEN
+            )
             .build()
         )
+
 
         self.app.add_handler(
             CommandHandler(
@@ -30,12 +34,14 @@ class TelegramReceiver:
             )
         )
 
+
         self.app.add_handler(
             CommandHandler(
                 "status",
                 status_command
             )
         )
+
 
         self.app.add_handler(
             CommandHandler(
@@ -44,12 +50,14 @@ class TelegramReceiver:
             )
         )
 
+
         self.app.add_handler(
             CommandHandler(
                 "memories",
                 memories_command
             )
         )
+
 
         self.app.add_handler(
             CommandHandler(
@@ -58,8 +66,12 @@ class TelegramReceiver:
             )
         )
 
+
     def start(self):
 
-        print("Telegram Receiver Started")
+        print(
+            "Telegram Receiver Started"
+        )
+
 
         self.app.run_polling()
