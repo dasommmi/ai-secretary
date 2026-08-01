@@ -1,33 +1,74 @@
-from content.builders.style_loader import StyleLoader
-from content.template_registry import TemplateRegistry
+from content.builders.profile_loader import (
+    ProfileLoader
+)
+
+from content.template_registry import (
+    TemplateRegistry
+)
+
 
 
 class PromptBuilder:
 
+
     def build(
             self,
             content_type: str,
-            request,
+            request
     ) -> str:
 
-        template = TemplateRegistry.get(content_type)
 
-        style = StyleLoader.load()
+        template = (
+            TemplateRegistry
+            .get(content_type)
+        )
+
+
+        profile = (
+            ProfileLoader
+            .load("sandy")
+        )
+
 
         return f"""
-# Template
+# Content Template
 
 {template}
 
-----------------------------------------
 
-# Style
+# Writing Profile
 
-{style}
+Name:
+{profile["name"]}
 
-----------------------------------------
 
-# User Input
+## Title Rules
+
+{profile["title"]}
+
+
+## Tone
+
+{profile["tone"]}
+
+
+## Writing Flow
+
+{profile["flow"]}
+
+
+## Preferred Expressions
+
+{profile["preferred"]}
+
+
+## Forbidden Expressions
+
+{profile["forbidden"]}
+
+
+## User Content
 
 {request.to_prompt()}
+
 """
