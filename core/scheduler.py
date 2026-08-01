@@ -21,7 +21,7 @@ class Scheduler:
                 try:
                     service.check()
 
-                except Exception as e:
-                    print(e)
+                except Exception:
+                    logger.exception(f"{service.__class__.__name__}.check() failed")
 
             time.sleep(CHECK_INTERVAL)

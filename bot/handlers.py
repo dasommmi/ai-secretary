@@ -14,6 +14,7 @@ from services.memory_service import (
     get_memories,
 )
 from core.runtime import runtime_manager
+from core.logger import logger
 
 content_service = ContentService()
 
@@ -32,6 +33,7 @@ Available Commands
 
 /help
 /status
+/health
 
 
 [Memory]
@@ -148,7 +150,13 @@ async def ask_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         return
 
-    answer = chat(text)
+    try:
+        answer = chat(text)
+
+    except Exception:
+        logger.exception("ask_command failed")
+        await update.message.reply_text("⚠️ AI 응답을 받아오는 데 실패했어요. 잠시 후 다시 시도해주세요.")
+        return
 
     await update.message.reply_text(answer)
 
@@ -165,9 +173,14 @@ async def content_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_id = str(update.effective_user.id)
 
-    session_service.create(user_id, content_type)
+    try:
+        form = content_service.get_form(content_type)
 
-    form = content_service.get_form(content_type)
+    except ValueError as e:
+        await update.message.reply_text(f"⚠️ {e}")
+        return
+
+    session_service.create(user_id, content_type)
 
     await update.message.reply_text(
         f"""
@@ -177,37 +190,6 @@ async def content_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 {form}
 """
-    )
-
-
-async def content_generate_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
-    text = " ".join(context.args)
-
-    if not text:
-
-        await update.message.reply_text("작성할 내용을 입력해주세요.")
-
-        return
-
-    service = ContentService()
-
-    request = service.parse("restaurant", text)
-
-    prompt = service.build_prompt("restaurant", request)
-
-    result = service.generate(prompt)
-
-    file_path = service.write_markdown("restaurant", result)
-
-    await update.message.reply_text(
-        f"""
-    📝 글 생성 완료
-    
-    파일 저장:
-    
-    {file_path}
-    """
     )
 
 
@@ -223,13 +205,21 @@ async def text_message_handler(update: Update, context: ContextTypes.DEFAULT_TYP
 
     content_type = session["content_type"]
 
-    request = content_service.parse(content_type, update.message.text)
+    try:
+        request = content_service.parse(content_type, update.message.text)
 
-    prompt = content_service.build_prompt(content_type, request)
+        prompt = content_service.build_prompt(content_type, request)
 
-    result = content_service.generate(prompt)
+        result = content_service.generate(prompt)
 
-    file_path = content_service.write_markdown(content_type, result)
+        file_path = content_service.write_markdown(content_type, result)
+
+    except Exception:
+        logger.exception("content generation failed for user %s" % user_id)
+        await update.message.reply_text(
+            "⚠️ 글 생성 중 오류가 발생했어요. 다시 입력해주세요."
+        )
+        return
 
     session_service.remove(user_id)
 

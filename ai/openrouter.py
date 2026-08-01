@@ -1,6 +1,7 @@
 import os
 import requests
 from config import AI_MODEL
+from core.logger import logger
 
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
@@ -17,8 +18,7 @@ def ask_openrouter(message: str):
         timeout=30,
     )
 
-    print(response.status_code)
-    print(response.text)
+    logger.debug(f"OpenRouter response [{response.status_code}]: {response.text}")
 
     response.raise_for_status()
 

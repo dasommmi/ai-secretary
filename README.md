@@ -65,11 +65,18 @@ generated/           # 생성된 콘텐츠 마크다운 결과물
 
 ## Known Issues / TODO
 
-- `handlers.py`의 `content_generate_command`는 정의만 되어 있고 `receiver.py`에
-  커맨드로 등록되어 있지 않다 (죽은 코드, 정리 필요)
-- `content` 파이프라인에 `cafe`/`travel`/`development` 템플릿·파서 추가 필요
-- `requirements.txt`에서 미사용 Google Generative AI 관련 패키지 정리 필요
-- 전반적인 리팩토링 예정 (현재 소스는 일부 미정리 상태)
+- `content` 파이프라인에 `cafe`/`travel`/`development` 템플릿·파서 추가 필요 (지금은 요청 시 사용자에게 안내 메시지만 나감)
+- `services/content_service.py`의 `ProfileLoader.load("sandy")`가 하드코딩되어 있어 다중 사용자 지원 시 수정 필요
+- 전반적인 코드 스타일(공백줄/포맷) 정리는 아직 남아있음
+
+## Recent Refactor
+
+- 죽은 코드 제거: `content_generate_command` (어디서도 등록되지 않던 핸들러)
+- `help_command` 텍스트를 실제 등록된 커맨드(`receiver.py`) 기준으로 동기화 (`/health` 누락 보완)
+- 지원하지 않는 `content` 타입 입력 시 처리 방식 정리 (세션 생성 전에 타입 검증, 명확한 에러 메시지)
+- 명령어 핸들러(`/ask`, `/content`, 텍스트 메시지 처리)에 예외 처리 추가 — OpenRouter 호출 실패 등으로 응답이 없던 문제 해결
+- 디버깅용 `print()` 로그를 `core/logger.py` 기반 로깅으로 교체 (`ai/openrouter.py`, `bot/sender.py`, `core/scheduler.py`)
+- 미사용 Google Generative AI 관련 패키지 15개 `requirements.txt`에서 정리 (실제로는 OpenRouter만 사용)
 
 ## Roadmap
 
@@ -77,6 +84,7 @@ generated/           # 생성된 콘텐츠 마크다운 결과물
 - [x] Telegram commands (help/status/health/remember/memories/ask/content)
 - [x] SQLite (memories)
 - [x] Content generation pipeline (restaurant)
+- [x] 명령어 핸들러 예외 처리 / 로깅 정비
 - [ ] Content generation - cafe / travel / development
 - [ ] AI Function Calling
 - [ ] Docker
