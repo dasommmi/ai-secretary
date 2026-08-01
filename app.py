@@ -61,17 +61,18 @@ if __name__ == "__main__":
 
     print_config()
 
-
+    from core.logger import logger
 
     init_db()
 
 
-
-    print(
+    logger.info(
         "Scheduler : Starting"
     )
 
-
+    logger.info(
+        "AI Secretary starting"
+    )
 
     threading.Thread(
         target=run_scheduler,

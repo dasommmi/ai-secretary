@@ -2,7 +2,7 @@ import time
 
 from config import CHECK_INTERVAL
 from services.swim_service import SwimService
-
+from core.logger import logger
 
 class Scheduler:
 
@@ -13,6 +13,9 @@ class Scheduler:
         ]
 
     def start(self):
+        logger.info(
+            "Scheduler Started"
+        )
 
         while True:
 

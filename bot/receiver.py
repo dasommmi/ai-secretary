@@ -13,7 +13,7 @@ from bot.handlers import (
     ask_command,
     health_command,
 )
-
+from core.logger import logger
 
 class TelegramReceiver:
 
@@ -77,7 +77,7 @@ class TelegramReceiver:
 
     def start(self):
 
-        print(
+        logger.info(
             "Telegram Receiver Started"
         )
 
