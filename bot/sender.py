@@ -1,6 +1,7 @@
 import requests
 
 from config import TELEGRAM_CHAT_ID, TELEGRAM_TOKEN
+from core.logger import logger
 
 
 def send_message(message: str):
@@ -12,4 +13,4 @@ def send_message(message: str):
     )
 
     if not response.ok:
-        print(response.text)
+        logger.error(f"Telegram sendMessage failed [{response.status_code}]: {response.text}")

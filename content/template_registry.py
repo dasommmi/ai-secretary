@@ -17,4 +17,9 @@ class TemplateRegistry:
         except ValueError:
             raise ValueError(f"지원하지 않는 콘텐츠 타입입니다. ({content_type})")
 
-        return cls._templates[content_type]()
+        template = cls._templates.get(content_type)
+
+        if template is None:
+            raise ValueError(f"아직 준비되지 않은 콘텐츠 타입입니다. ({content_type.value})")
+
+        return template()
