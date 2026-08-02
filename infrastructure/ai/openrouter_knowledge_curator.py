@@ -1,4 +1,5 @@
 from ai.openrouter import ask_openrouter
+
 from domain.knowledge.category_profiles import CATEGORY_PROFILES
 from domain.knowledge.entities import KnowledgeItem
 
@@ -9,11 +10,19 @@ class OpenRouterKnowledgeCurator:
 
         profile = CATEGORY_PROFILES[category]
 
-        prompt = self._build_prompt(profile)
+        for _ in range(3):
 
-        response = ask_openrouter(prompt)
+            prompt = self._build_prompt(profile)
 
-        return self._parse_response(category, response)
+            response = ask_openrouter(prompt)
+
+            response = self._clean_response(response)
+
+            if self._validate_response(response):
+
+                return self._parse_response(category, response)
+
+        raise Exception("Knowledge 생성 실패")
 
     def _build_prompt(self, profile):
 
@@ -27,6 +36,18 @@ class OpenRouterKnowledgeCurator:
 작성 규칙:
 
 {profile.prompt_rule}
+
+
+추가 규칙:
+
+- 반드시 한국어로 작성
+- 영어 용어는 한국어 설명을 함께 작성
+- Markdown 사용 금지
+- #, -, *, **, ``` 사용 금지
+- 친구에게 설명하듯 자연스럽게 작성
+- 너무 어려운 용어는 쉽게 풀어서 설명
+- 답변은 3~5문장
+- 마지막에 "한 줄 정리:" 추가
 
 
 조건:
@@ -46,13 +67,48 @@ ANSWER:
 답변
 """
 
+    def _clean_response(self, response: str):
+
+        response = response.replace("**", "").replace("```", "").replace("#", "")
+
+        lines = []
+
+        for line in response.splitlines():
+
+            line = line.strip()
+
+            if line:
+
+                lines.append(line)
+
+        return "\n".join(lines)
+
+    def _validate_response(self, response: str):
+
+        if "QUESTION:" not in response.upper():
+
+            return False
+
+        if "ANSWER:" not in response.upper():
+
+            return False
+
+        if len(response) < 100:
+
+            return False
+
+        return True
+
     def _parse_response(self, category, response):
+
         print("===== AI RESPONSE =====")
 
         print(response)
 
         print("======================")
+
         question = ""
+
         answer = ""
 
         mode = None
@@ -62,6 +118,7 @@ ANSWER:
             line = line.strip()
 
             if not line:
+
                 continue
 
             if line.upper().startswith("QUESTION"):
@@ -70,7 +127,7 @@ ANSWER:
 
                 content = line.split(":", 1)
 
-                if len(content) > 1 and content[1].strip():
+                if len(content) > 1:
 
                     question = content[1].strip()
 
@@ -82,7 +139,7 @@ ANSWER:
 
                 content = line.split(":", 1)
 
-                if len(content) > 1 and content[1].strip():
+                if len(content) > 1:
 
                     answer = content[1].strip()
 
