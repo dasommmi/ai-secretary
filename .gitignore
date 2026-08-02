@@ -26,3 +26,6 @@ logs/
 # generated
 generated/*
 !generated/.gitkeep
+
+# test
+test*.py
