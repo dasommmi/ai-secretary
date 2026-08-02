@@ -103,10 +103,6 @@ ANSWER:
 
         print("===== AI RESPONSE =====")
 
-        print(response)
-
-        print("======================")
-
         question = ""
 
         answer = ""

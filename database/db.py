@@ -36,6 +36,19 @@ def init_db():
         """)
 
     # ----------------------------
+    # KAKAO TOKENS
+    # ----------------------------
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS kakao_tokens (
+            id INTEGER PRIMARY KEY,
+            access_token TEXT NOT NULL,
+            refresh_token TEXT NOT NULL,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        """)
+
+    # ----------------------------
     # Knowledge Interest
     # ----------------------------
 

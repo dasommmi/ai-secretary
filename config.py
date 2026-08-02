@@ -53,7 +53,9 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 # ======================
 
 KAKAO_ACCESS_TOKEN = os.getenv("KAKAO_ACCESS_TOKEN")
-
+KAKAO_REFRESH_TOKEN = os.getenv("KAKAO_REFRESH_TOKEN")
+KAKAO_REST_API_KEY = os.getenv("KAKAO_REST_API_KEY")
+KAKAO_CLIENT_SECRET = os.getenv("KAKAO_CLIENT_SECRET")
 
 # ======================
 # AI Config

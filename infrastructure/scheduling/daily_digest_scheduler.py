@@ -17,21 +17,21 @@ class DailyDigestScheduler:
 
         print("🔥 DailyDigestScheduler started")
 
-        # self.scheduler.add_job(
-        #     self.execute,
-        #     trigger="interval",
-        #     seconds=5,
-        #     max_instances=1,
-        #     coalesce=True,
-        # )
         self.scheduler.add_job(
             self.execute,
-            trigger="cron",
-            hour=8,
-            minute=30,
+            trigger="interval",
+            seconds=5,
             max_instances=1,
             coalesce=True,
         )
+        # self.scheduler.add_job(
+        #     self.execute,
+        #     trigger="cron",
+        #     hour=8,
+        #     minute=30,
+        #     max_instances=1,
+        #     coalesce=True,
+        # )
 
         self.scheduler.start()
 
@@ -66,7 +66,3 @@ A. {item.answer}
             print(f"Telegram 전송 : {item.category}")
 
             self.notifier.send(message)
-
-            # Telegram 연속 발송 방지
-
-            # time.sleep(1)
