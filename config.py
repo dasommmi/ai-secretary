@@ -2,7 +2,6 @@ import os
 
 from dotenv import load_dotenv
 
-
 load_dotenv()
 
 
@@ -39,7 +38,6 @@ def get_environment():
 # ======================
 
 CHECK_INTERVAL = 10
-
 AI_MODEL = "openrouter/free"
 
 
@@ -48,9 +46,13 @@ AI_MODEL = "openrouter/free"
 # ======================
 
 TELEGRAM_TOKEN = None
-
-
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+
+# ======================
+# KAKAO Config
+# ======================
+
+KAKAO_ACCESS_TOKEN = os.getenv("KAKAO_ACCESS_TOKEN")
 
 
 # ======================
@@ -58,8 +60,6 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 # ======================
 
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-
-
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 
@@ -72,8 +72,7 @@ set_environment(os.getenv("APP_ENV", "dev"))
 
 def print_config():
 
-    print(
-        """
+    print("""
 ================================
 
 🤖 AI Secretary
@@ -82,7 +81,4 @@ Environment : {}
 Telegram    : {}
 
 ================================
-""".format(
-            APP_ENV.upper(), "DEV BOT" if APP_ENV == "dev" else "PROD BOT"
-        )
-    )
+""".format(APP_ENV.upper(), "DEV BOT" if APP_ENV == "dev" else "PROD BOT"))

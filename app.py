@@ -12,6 +12,8 @@ from core.runtime import runtime_manager
 from core.scheduler import Scheduler
 from database.db import init_db
 from infrastructure.ai.openrouter_knowledge_curator import OpenRouterKnowledgeCurator
+from infrastructure.notification.composite_notifier import CompositeNotifier
+from infrastructure.notification.kakao_notifier import KakaoNotifier
 from infrastructure.notification.telegram_notifier import TelegramNotifier
 from infrastructure.persistence.sqlite_digest_repository import SqliteDigestRepository
 from infrastructure.persistence.sqlite_interest_repository import (
@@ -48,8 +50,16 @@ def run_digest_scheduler():
         curator=curator,
     )
 
+    notifier = CompositeNotifier(
+        [
+            TelegramNotifier(),
+            KakaoNotifier(),
+        ]
+    )
+
     digest_scheduler = DailyDigestScheduler(
-        use_case=use_case, notifier=TelegramNotifier()
+        use_case=use_case,
+        notifier=notifier,
     )
 
     digest_scheduler.start()

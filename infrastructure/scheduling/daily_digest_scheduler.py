@@ -17,6 +17,13 @@ class DailyDigestScheduler:
 
         print("🔥 DailyDigestScheduler started")
 
+        # self.scheduler.add_job(
+        #     self.execute,
+        #     trigger="interval",
+        #     seconds=5,
+        #     max_instances=1,
+        #     coalesce=True,
+        # )
         self.scheduler.add_job(
             self.execute,
             trigger="cron",
