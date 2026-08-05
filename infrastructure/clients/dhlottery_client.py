@@ -1,9 +1,10 @@
+from playwright.sync_api import Page
+
 from config.settings import (
     LOTTO_HEADLESS,
     LOTTO_ID,
     LOTTO_PASSWORD,
 )
-
 from infrastructure.browser.playwright_client import PlaywrightClient
 
 
@@ -17,7 +18,7 @@ class DHLotteryClient:
             headless=LOTTO_HEADLESS,
         )
 
-        self.page = None
+        self.page: Page | None = None
 
     def start(self):
 
@@ -33,10 +34,17 @@ class DHLotteryClient:
 
     def _login_if_needed(self):
 
-        self.page.goto(self.LOGIN_URL)
+        print("login page loaded")
 
-        # 이미 로그인 상태인지 확인
+        self.page.goto(
+            self.LOGIN_URL,
+            wait_until="domcontentloaded",
+            timeout=60000,
+        )
+
         if self._is_logged_in():
+
+            print("already logged in")
 
             return
 
@@ -52,6 +60,17 @@ class DHLotteryClient:
 
         self.page.locator("#btnLogin").click()
 
+        self.page.wait_for_timeout(3000)
+
+        self._close_login_popup()
+
+        print(
+            "login finished:",
+            self.page.url,
+        )
+
+    def _close_login_popup(self):
+
         try:
 
             self.page.get_by_role(
@@ -59,20 +78,49 @@ class DHLotteryClient:
                 name="오늘 그만 보기",
             ).click(timeout=3000)
 
+            print("popup closed")
+
         except Exception:
 
-            pass
+            print("no popup")
 
     def _is_logged_in(self):
 
         try:
 
-            self.page.get_by_text(
-                "로그아웃",
-            ).wait_for(timeout=3000)
+            self.page.get_by_text("로그아웃").wait_for(timeout=10000)
 
             return True
 
         except Exception:
 
             return False
+
+    def open_lotto_popup(self):
+
+        if self.page is None:
+
+            raise Exception("Client is not started")
+
+        print("opening lotto popup")
+
+        with self.page.expect_popup() as popup_info:
+
+            self.page.get_by_role(
+                "button",
+                name="로또6/",
+            ).click()
+
+        popup = popup_info.value
+
+        popup.wait_for_load_state(
+            "domcontentloaded",
+            timeout=60000,
+        )
+
+        print(
+            "lotto popup:",
+            popup.url,
+        )
+
+        return popup
