@@ -1,4 +1,4 @@
-from database.db import get_connection
+from infrastructure.persistence.db import get_connection
 
 
 class SqliteKakaoTokenRepository:

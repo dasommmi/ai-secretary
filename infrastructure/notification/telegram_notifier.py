@@ -1,6 +1,6 @@
 import requests
 
-from config import TELEGRAM_TOKEN, TELEGRAM_CHAT_ID
+from config.settings import TELEGRAM_TOKEN, TELEGRAM_CHAT_ID
 
 
 class TelegramNotifier:

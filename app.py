@@ -4,13 +4,13 @@ import threading
 from application.knowledge.generate_daily_digest_use_case import (
     GenerateDailyDigestUseCase,
 )
-from config import (
+from config.settings import (
     set_environment,
     print_config,
 )
-from core.runtime import runtime_manager
-from core.scheduler import Scheduler
-from database.db import init_db
+from application.runtime import runtime_manager
+from infrastructure.scheduling.scheduler import Scheduler
+from infrastructure.persistence.db import init_db
 from infrastructure.ai.openrouter_knowledge_curator import OpenRouterKnowledgeCurator
 from infrastructure.notification.composite_notifier import CompositeNotifier
 from infrastructure.notification.kakao_notifier import KakaoNotifier
@@ -85,7 +85,7 @@ if __name__ == "__main__":
 
     print_config()
 
-    from core.logger import logger
+    from application.logger import logger
 
     init_db()
 
@@ -95,6 +95,6 @@ if __name__ == "__main__":
 
     threading.Thread(target=run_digest_scheduler, daemon=True).start()
     # 환경 설정 이후 import
-    from bot.receiver import TelegramReceiver
+    from interfaces.telegram.receiver import TelegramReceiver
 
     TelegramReceiver().start()

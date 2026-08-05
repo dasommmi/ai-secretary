@@ -2,7 +2,7 @@ import json
 
 import requests
 
-from config import (
+from config.settings import (
     KAKAO_REST_API_KEY,
     KAKAO_CLIENT_SECRET,
 )
