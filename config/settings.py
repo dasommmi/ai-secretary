@@ -84,3 +84,12 @@ Telegram    : {}
 
 ================================
 """.format(APP_ENV.upper(), "DEV BOT" if APP_ENV == "dev" else "PROD BOT"))
+
+
+# ======================
+# Lottery Config
+# ======================
+
+LOTTO_ID = os.getenv("LOTTO_ID")
+LOTTO_PASSWORD = os.getenv("LOTTO_PASSWORD")
+LOTTO_HEADLESS = os.getenv("LOTTO_HEADLESS", "true").lower() == "true"
