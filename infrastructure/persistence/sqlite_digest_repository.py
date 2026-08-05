@@ -1,6 +1,6 @@
 from datetime import date
 
-from database.db import get_connection
+from infrastructure.persistence.db import get_connection
 from domain.knowledge.entities import DailyDigest
 from domain.knowledge.ports import DigestRepositoryPort
 

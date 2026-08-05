@@ -1,12 +1,14 @@
-CATEGORY_DISPLAY_NAME = {
-    "TECH_AI": "🤖 Tech & AI",
-    "HOBBY": "🎸 Hobby",
-    "GENERAL": "📚 General",
-    "FUN": "😂 Fun / TMI",
-    "MONEY": "💰 Money / Economy",
-}
+from enum import Enum
 
 
-def get_category_name(category: str):
+class KnowledgeCategory(Enum):
 
-    return CATEGORY_DISPLAY_NAME.get(category, category)
+    TECH_AI = "TECH_AI"
+
+    HOBBY = "HOBBY"
+
+    GENERAL = "GENERAL"
+
+    FUN_TMI = "FUN_TMI"
+
+    MONEY_ECONOMY = "MONEY_ECONOMY"

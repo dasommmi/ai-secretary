@@ -1,4 +1,4 @@
-from domain.knowledge.category import get_category_name
+from domain.knowledge.category_display import get_category_name
 
 
 class DailyDigestScheduler:

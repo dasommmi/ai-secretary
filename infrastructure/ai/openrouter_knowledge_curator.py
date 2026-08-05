@@ -1,4 +1,4 @@
-from ai.openrouter import ask_openrouter
+from infrastructure.ai.openrouter import ask_openrouter
 
 from domain.knowledge.category_profiles import CATEGORY_PROFILES
 from domain.knowledge.entities import KnowledgeItem
