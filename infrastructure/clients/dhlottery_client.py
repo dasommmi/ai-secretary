@@ -124,3 +124,47 @@ class DHLotteryClient:
         )
 
         return popup
+
+    def purchase_lotto(self):
+
+        if self.page is None:
+
+            raise Exception("Client is not started")
+
+        popup = self.open_lotto_popup()
+
+        frame = popup.locator('iframe[name="ifrm_tab"]').content_frame
+
+        print("lotto purchase page loaded")
+
+        # 1. 자동선택
+        frame.get_by_text(
+            "자동선택",
+            exact=True,
+        ).click()
+
+        print("auto select clicked")
+
+        # 2. 적용수량 5게임
+        frame.get_by_label(
+            "적용수량",
+        ).select_option("5")
+
+        print("quantity selected: 5")
+
+        # 3. 적용수량 확인
+        frame.locator("#btnSelectNum").click()
+
+        print("number selection confirmed")
+
+        # 4. 구매하기
+        frame.locator("#btnBuy").click()
+
+        print("buy button clicked")
+
+        # 5. 최종 구매 확인
+        frame.locator('input[type="button"][value="확인"]').click()
+
+        print("purchase confirmed")
+
+        return popup
