@@ -4,25 +4,27 @@ import threading
 from application.knowledge.generate_daily_digest_use_case import (
     GenerateDailyDigestUseCase,
 )
+from application.runtime import runtime_manager
 from config.settings import (
     set_environment,
     print_config,
 )
-from application.runtime import runtime_manager
-from infrastructure.scheduling.scheduler import Scheduler
-from infrastructure.persistence.db import init_db
 from infrastructure.ai.openrouter_knowledge_curator import OpenRouterKnowledgeCurator
 from infrastructure.notification.composite_notifier import CompositeNotifier
 from infrastructure.notification.kakao_notifier import KakaoNotifier
 from infrastructure.notification.telegram_notifier import TelegramNotifier
+from infrastructure.persistence.db import init_db
 from infrastructure.persistence.sqlite_digest_repository import SqliteDigestRepository
 from infrastructure.persistence.sqlite_interest_repository import (
     SqliteInterestRepository,
 )
 from infrastructure.scheduling.daily_digest_scheduler import DailyDigestScheduler
+from infrastructure.scheduling.lotto_scheduler import LottoScheduler
+from infrastructure.scheduling.scheduler import Scheduler
 
 scheduler = None
 digest_scheduler = None
+lotto_scheduler = None
 
 
 def run_scheduler():
@@ -65,6 +67,15 @@ def run_digest_scheduler():
     digest_scheduler.start()
 
 
+def run_lotto_scheduler():
+
+    global lotto_scheduler
+
+    lotto_scheduler = LottoScheduler()
+
+    lotto_scheduler.start()
+
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
@@ -94,6 +105,12 @@ if __name__ == "__main__":
     logger.info("AI Secretary starting")
 
     threading.Thread(target=run_digest_scheduler, daemon=True).start()
+
+    threading.Thread(
+        target=run_lotto_scheduler,
+        daemon=True,
+    ).start()
+
     # 환경 설정 이후 import
     from interfaces.telegram.receiver import TelegramReceiver
 
