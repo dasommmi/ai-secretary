@@ -163,8 +163,122 @@ class DHLotteryClient:
         print("buy button clicked")
 
         # 5. 최종 구매 확인
-        frame.locator('input[type="button"][value="확인"]').click()
+        frame.locator("#popupLayerConfirm").get_by_role(
+            "button",
+            name="확인",
+        ).click()
 
         print("purchase confirmed")
 
-        return popup
+        # 6. 구매 완료/안내 팝업 확인
+        frame.locator("#closeLayer").click()
+
+        print("purchase result popup closed")
+
+        popup.close()
+
+        return True
+
+    def purchase_pension_lottery(self):
+
+        if self.page is None:
+            raise Exception("Client is not started")
+
+        print("opening pension lottery popup")
+
+        with self.page.expect_popup() as popup_info:
+
+            self.page.get_by_role(
+                "button",
+                name="연금복권720+",
+            ).click()
+
+        popup = popup_info.value
+
+        popup.wait_for_load_state(
+            "domcontentloaded",
+            timeout=60000,
+        )
+
+        frame = popup.locator('iframe[name="ifrm_tab"]').content_frame
+
+        print("pension lottery page loaded")
+
+        # 1. 자동 번호
+        frame.get_by_role(
+            "link",
+            name="자동 번호",
+        ).click()
+
+        print("pension auto number selected")
+
+        # 2. 선택 완료
+        frame.get_by_role(
+            "link",
+            name="선택 완료",
+        ).click()
+
+        print("pension number selection completed")
+
+        # 3. 이미 판매된 번호인지 확인
+        sold_out_message = frame.get_by_text(
+            "선택하신 번호는 이미 판매가 완료되었습니다.",
+            exact=True,
+        )
+
+        if sold_out_message.is_visible():
+
+            print("selected number already sold")
+
+            # 추천 번호 중 첫 번째 선택
+            recommended_number = frame.locator('input[name="recomandCheckNum"]').first
+
+            recommended_number.check()
+
+            print("recommended number selected")
+
+            # 추천 번호 선택
+            frame.locator('a[onclick="recomandNumberSelect()"]').click()
+
+            print("recommended number confirmed")
+
+        # 4. 구매하기
+        frame.get_by_role(
+            "link",
+            name="구매하기",
+        ).click()
+
+        print("pension buy button clicked")
+
+        # 5. 구매 확인 팝업의 최종 구매하기
+        frame.locator("#lotto720_popup_confirm").get_by_role(
+            "link",
+            name="구매하기",
+        ).click()
+
+        print("pension final purchase clicked")
+
+        # 6. 구매 완료 여부 확인
+        purchase_complete_message = frame.locator(
+            "span.lotto720_popup_content_str.saleRetMsg"
+        )
+
+        purchase_complete_message.wait_for(
+            state="visible",
+            timeout=10000,
+        )
+
+        message = purchase_complete_message.inner_text().strip()
+
+        if message == "구매가 완료되었습니다.":
+
+            print("pension lottery purchase completed")
+
+            return True
+
+        print(
+            "pension lottery purchase failed:",
+            message,
+        )
+
+        return False
